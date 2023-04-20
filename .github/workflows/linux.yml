@@ -2,7 +2,7 @@ name: Linux
 
 on: [push, pull_request]
 
-# jobs:
+jobs:
   # build:
   #   runs-on: ${{ matrix.os }}
   #   strategy:
@@ -35,20 +35,20 @@ on: [push, pull_request]
   #       cd build
   #       ctest --output-on-failure --schedule-random -j $(nproc --all)
 
-release: 
-  name: Release
-  runs-on: ubuntu-22.04
-  steps:
-    - uses: actions/checkout@v3
-    - name: install dependencies
-      run: sudo apt-get update && sudo apt-get install -y libsdl2-dev libfreetype-dev
-    - name: configure
-      run: cmake -D CMAKE_BUILD_TYPE=Release -B build
-    - name: build
-      run: cmake --build build -j $(nproc --all)
-    - name: create release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: build/SDL2ppConfig.cmake
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  release: 
+    name: Release
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: install dependencies
+        run: sudo apt-get update && sudo apt-get install -y libsdl2-dev libfreetype-dev
+      - name: configure
+        run: cmake -D CMAKE_BUILD_TYPE=Release -B build
+      - name: build
+        run: cmake --build build -j $(nproc --all)
+      - name: create release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/SDL2ppConfig.cmake
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

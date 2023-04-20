@@ -2,7 +2,7 @@ name: Windows
 
 on: [push, pull_request]
 
-# jobs:
+jobs:
   # msbuild:
   #   runs-on: ${{ matrix.os }}
   #   strategy:
