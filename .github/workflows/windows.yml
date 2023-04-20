@@ -59,7 +59,7 @@ jobs:
       - name: create release
         uses: softprops/action-gh-release@v1
         with:
-          files: build/Source/Osiris.dll
+          files: build/Osiris.dll
           tag_name: latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
