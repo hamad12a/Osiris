@@ -1,9 +1,13 @@
 name: Linux
-on:
+
+on: 
   push:
     branches:
+      - mine
+  pull_request:
+    branches:
       - master
-
+    remote: upstream
 jobs:
   release: 
     name: Release
