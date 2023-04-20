@@ -49,7 +49,7 @@ jobs:
       - name: create release
         uses: softprops/action-gh-release@v1
         with:
-          files: build/SDL2ppConfig.cmake
+          files: build/Source/libOsiris.so
           tag_name: latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
