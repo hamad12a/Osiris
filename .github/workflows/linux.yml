@@ -8,6 +8,7 @@ on:
     branches:
       - master
     remote: upstream
+    
 jobs:
   release: 
     name: Release
