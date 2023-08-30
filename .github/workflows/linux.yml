@@ -1,6 +1,11 @@
 name: Linux
- 
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore:
+      - '**/windows.yml'
+  pull_request:
+    paths-ignore:
+      - '**/windows.yml'
 
     
 jobs:
