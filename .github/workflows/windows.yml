@@ -31,7 +31,7 @@ jobs:
     - name: Upload artifact
       uses: softprops/action-gh-release@v1
       with:
-        files: build/bin/Release/Osiris.dll
+        files: Osiris/Debug/Osiris.dll
         tag_name: latest
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
