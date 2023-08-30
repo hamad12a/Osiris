@@ -295,8 +295,8 @@ void Visuals::applyZoom(csgo::FrameStage stage) noexcept
     if (zoom && localPlayer) {
         if (stage == csgo::FrameStage::RENDER_START && (localPlayer.get().fov() == 90 || localPlayer.get().fovStart() == 90)) {
             if (visualsConfig.zoomKey.isToggled()) {
-                localPlayer.get().fov() = 40;
-                localPlayer.get().fovStart() = 40;
+                localPlayer.get().fov() = 20;
+                localPlayer.get().fovStart() = 20;
             }
         }
     }
