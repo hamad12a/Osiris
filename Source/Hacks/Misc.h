@@ -57,6 +57,7 @@ public:
     void antiAfkKick(csgo::UserCmd* cmd) noexcept;
     void fixAnimationLOD(csgo::FrameStage stage) noexcept;
     void autoPistol(csgo::UserCmd* cmd) noexcept;
+    void semiAuto(csgo::UserCmd* cmd) noexcept;
     void autoReload(csgo::UserCmd* cmd) noexcept;
     void revealRanks(csgo::UserCmd* cmd) noexcept;
     void autoStrafe(csgo::UserCmd* cmd) noexcept;

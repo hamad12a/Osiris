@@ -89,6 +89,7 @@ struct MiscConfig {
     MiscConfig() { clanTag[0] = '\0'; }
 
     KeyBind menuKey{ KeyBind::INSERT };
+    KeyBindToggle semiAutoKey;
     bool antiAfkKick{ false };
     bool autoStrafe{ false };
     bool bunnyHop{ false };
@@ -100,6 +101,7 @@ struct MiscConfig {
     bool edgejump{ false };
     bool slowwalk{ false };
     bool autoPistol{ false };
+    bool semiAuto{ false };
     bool autoReload{ false };
     bool autoAccept{ false };
     bool radarHack{ false };
@@ -431,13 +433,22 @@ void Misc::watermark() noexcept
     if (!gui->isOpen())
         windowFlags |= ImGuiWindowFlags_NoInputs;
 
-    ImGui::SetNextWindowBgAlpha(0.3f);
-    ImGui::Begin("Watermark", nullptr, windowFlags);
+    // ImGui::SetNextWindowBgAlpha(0.3f);
+    ImGui::Begin("WatermarkTest", nullptr, windowFlags);
 
     static auto frameRate = 1.0f;
     frameRate = 0.9f * frameRate + 0.1f * memory.globalVars->absoluteFrameTime;
 
     ImGui::Text("Osiris | %d fps | %d ms", frameRate != 0.0f ? static_cast<int>(1 / frameRate) : 0, GameData::getNetOutgoingLatency());
+    // ImGui::Text("Semi Auto: %s", miscConfig.semiAutoKey.isToggled() ? "on" : "off");
+    ImGui::Text("Semi Auto: ");
+    if (miscConfig.semiAutoKey.isToggled()) {
+        ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "on"); 
+    } 
+    else {
+        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "off"); 
+    }
+    // ImGui::Text("localPlayer.get().fov() = %d", localPlayer.get().fov());
     ImGui::End();
 }
 
@@ -781,7 +792,30 @@ void Misc::autoPistol(csgo::UserCmd* cmd) noexcept
             if (activeWeapon.itemDefinitionIndex() == WeaponId::Revolver)
                 cmd->buttons &= ~csgo::UserCmd::IN_ATTACK2;
             else
-                cmd->buttons &= ~csgo::UserCmd::IN_ATTACK;
+                cmd->buttons = cmd->buttons & ~csgo::UserCmd::IN_ATTACK;
+        }
+        // Semi-automatic mode for full-auto weapons
+        
+    }
+}
+
+void Misc::semiAuto(csgo::UserCmd* cmd) noexcept
+{
+    if (miscConfig.semiAuto && localPlayer) {
+        const auto activeWeapon = csgo::Entity::from(retSpoofGadgets->client, localPlayer.get().getActiveWeapon());
+        if (activeWeapon.getPOD() != nullptr && activeWeapon.isFullAuto() && miscConfig.semiAutoKey.isToggled()) {
+            static bool hasFired = false;
+            if (cmd->buttons & csgo::UserCmd::IN_ATTACK){
+                if (!hasFired){ // check if the weapon has fired its first shot
+                    hasFired = true; // set the flag to true
+                }
+                else { // if the weapon has fired its first shot
+                    cmd->buttons &= ~csgo::UserCmd::IN_ATTACK; // clear the IN_ATTACK flag to unhold the primary button
+                }
+            }
+            else {
+                hasFired = false; 
+            }
         }
     }
 }
@@ -1368,7 +1402,7 @@ void Misc::updateEventListeners(bool forceRemove) noexcept
 
 void Misc::updateInput() noexcept
 {
-
+    miscConfig.semiAutoKey.handleToggle();
 }
 
 static bool windowOpen = false;
@@ -1421,6 +1455,11 @@ void Misc::drawGUI(Visuals& visuals, inventory_changer::InventoryChanger& invent
     ImGuiCustom::colorPicker("Recoil crosshair", miscConfig.recoilCrosshair);
     ImGuiCustom::colorPicker("Aim position line", miscConfig.headshotLine);
     ImGui::Checkbox("Auto pistol", &miscConfig.autoPistol);
+    ImGui::Checkbox("Semi Auto", &miscConfig.semiAuto);
+    ImGui::SameLine();
+    ImGui::PushID("Semi Auto Key");
+    ImGui::hotkey("", miscConfig.semiAutoKey);
+    ImGui::PopID();
     ImGui::Checkbox("Auto reload", &miscConfig.autoReload);
     ImGui::Checkbox("Auto accept", &miscConfig.autoAccept);
     ImGui::Checkbox("Radar hack", &miscConfig.radarHack);
@@ -1648,6 +1687,8 @@ static void from_json(const json& j, MiscConfig& m)
     read<value_t::object>(j, "Recoil crosshair", m.recoilCrosshair);
     read<value_t::object>(j, "Headshot line", m.headshotLine);
     read(j, "Auto pistol", m.autoPistol);
+    read(j, "Semi Auto", m.semiAuto);
+    read(j, "Semi Auto Key", m.semiAutoKey);
     read(j, "Auto reload", m.autoReload);
     read(j, "Auto accept", m.autoAccept);
     read(j, "Radar hack", m.radarHack);
@@ -1784,6 +1825,8 @@ static void to_json(json& j, const MiscConfig& o)
     WRITE("Recoil crosshair", recoilCrosshair);
     WRITE("Headshot line", headshotLine);
     WRITE("Auto pistol", autoPistol);
+    WRITE("Semi Auto", semiAuto);
+    WRITE("Semi Auto Key", semiAutoKey);
     WRITE("Auto reload", autoReload);
     WRITE("Auto accept", autoAccept);
     WRITE("Radar hack", radarHack);

@@ -15,7 +15,7 @@
 #include "../Memory.h"
 #include "../imguiCustom.h"
 #include "Visuals.h"
-
+#include "../GUI.h"
 #include <CSGO/PODs/ConVar.h>
 #include <CSGO/ConVar.h>
 #include <CSGO/Cvar.h>
@@ -43,7 +43,8 @@
 #include <BytePatterns/ClientPatternFinder.h>
 
 struct VisualsConfig {
-    KeyBindToggle zoomKey;
+    // KeyBindToggle zoomKey;
+    KeyBind zoomKey;
     bool thirdperson{ false };
     KeyBindToggle thirdpersonKey;
     int thirdpersonDistance{ 0 };
@@ -292,12 +293,21 @@ void Visuals::removeShadows() noexcept
 
 void Visuals::applyZoom(csgo::FrameStage stage) noexcept
 {
-    if (zoom && localPlayer) {
-        if (stage == csgo::FrameStage::RENDER_START && (localPlayer.get().fov() == 90 || localPlayer.get().fovStart() == 90)) {
-            if (visualsConfig.zoomKey.isToggled()) {
-                localPlayer.get().fov() = 20;
-                localPlayer.get().fovStart() = 20;
+    if (zoom && localPlayer && stage == csgo::FrameStage::RENDER_START) {
+        static bool fovOn = false;
+        if (visualsConfig.zoomKey.isToggled()) {
+            if (!fovOn & visualsConfig.fov == 0) {
+                visualsConfig.fov = -50;
+                fovOn = true;
             }
+            else if (!fovOn & visualsConfig.fov == -50) {
+                visualsConfig.fov = -60;
+                fovOn = false;
+            }
+        }
+        else {
+            visualsConfig.fov = 0;
+            fovOn = false;
         }
     }
 }

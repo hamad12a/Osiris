@@ -64,3 +64,8 @@ add_subdirectory(Hooks)
 add_subdirectory(InventoryChanger)
 add_subdirectory(MemorySearch)
 add_subdirectory(RetSpoof)
+
+# add_custom_command(TARGET OsirisOBJ POST_BUILD
+#     COMMAND scp $<TARGET_OBJECTS:OsirisOBJ> user@remote:/path/to/libOsiris.so /path/to/local/directory
+#     COMMENT "Copying libOsiris.so to local computer"
+# )

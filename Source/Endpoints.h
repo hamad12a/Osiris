@@ -214,6 +214,7 @@ bool FASTCALL_CONV ClientModeHooks::createMove(FASTCALL_THIS(csgo::ClientMode* t
     features->misc.autoStrafe(cmd);
     features->misc.removeCrouchCooldown(cmd);
     features->misc.autoPistol(cmd);
+    features->misc.semiAuto(cmd);
     features->misc.autoReload(cmd);
     features->misc.updateClanTag();
     features->misc.fakeBan();
