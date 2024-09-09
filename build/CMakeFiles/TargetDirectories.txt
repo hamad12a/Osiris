@@ -1,0 +1,5 @@
+/workspaces/Osiris/build/CMakeFiles/edit_cache.dir
+/workspaces/Osiris/build/CMakeFiles/rebuild_cache.dir
+/workspaces/Osiris/build/Source/CMakeFiles/Osiris.dir
+/workspaces/Osiris/build/Source/CMakeFiles/edit_cache.dir
+/workspaces/Osiris/build/Source/CMakeFiles/rebuild_cache.dir

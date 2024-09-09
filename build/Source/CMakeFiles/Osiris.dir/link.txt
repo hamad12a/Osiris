@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -O3 -DNDEBUG -Wl,--no-undefined -nostdlib -shared -Wl,-soname,libOsiris.so -o libOsiris.so CMakeFiles/Osiris.dir/dllmain.cpp.o CMakeFiles/Osiris.dir/LinuxEndpoints.s.o  -ldl -lc
